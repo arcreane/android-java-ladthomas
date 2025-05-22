@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">EventWave</string>
+    <string name="permission_denied">Permission de localisation refusée</string>
+    <string name="location_not_found">Impossible d\'obtenir votre position</string>
+    <string name="home">Accueil</string>
+    <string name="history">Historique</string>
+    <string name="favorites">Favoris</string>
+    <string name="settings">Paramètres</string>
+    <string name="search">Rechercher</string>
+    <string name="no_favorites">Aucun favori</string>
+    <string name="no_history">Aucun historique</string>
+    <string name="clear_history">Effacer l\'historique</string>
+    <string name="confirm_clear_history">Voulez-vous vraiment effacer tout l\'historique ?</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+</resources>
