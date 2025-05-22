@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # EventWave
 
 EventWave est une application Android qui permet de découvrir et de suivre les événements à proximité de votre position. L'application utilise l'API Eventbrite pour récupérer les événements et Google Maps pour l'affichage cartographique.
@@ -72,3 +73,6 @@ Les contributions sont les bienvenues ! N'hésitez pas à :
 ## Licence
 
 Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails. 
+=======
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/F-P0wqoO)
+>>>>>>> c8da107cd132d7229808ccf5f074711ba344876f
