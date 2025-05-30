@@ -1,5 +1,6 @@
 package com.example.eventwave.ui.history;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.eventwave.MapActivity;
 import com.example.eventwave.adapter.EventAdapter;
 import com.example.eventwave.databinding.FragmentHistoryBinding;
 import com.example.eventwave.model.Event;
@@ -33,6 +35,12 @@ public class HistoryFragment extends Fragment implements EventAdapter.OnEventCli
         setupClearHistoryButton();
         setupSwipeRefresh();
         observeViewModel();
+
+        // Configurer le bouton FAB pour la carte
+        binding.fabMap.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), MapActivity.class);
+            startActivity(intent);
+        });
 
         return root;
     }
@@ -91,6 +99,22 @@ public class HistoryFragment extends Fragment implements EventAdapter.OnEventCli
 
     @Override
     public void onEventClick(Event event) {
-        // Gérer le clic sur un événement de l'historique
+        // Ici vous pouvez naviguer vers les détails de l'événement
+        Snackbar.make(binding.getRoot(), "Événement sélectionné : " + event.getTitle(), Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onFavoriteClick(Event event) {
+        // Inverser le statut de favori
+        eventViewModel.toggleFavorite(event);
+        
+        // Mettre à jour l'adaptateur avec l'événement modifié
+        eventAdapter.updateEvent(event);
+        
+        // Afficher un message de confirmation
+        String message = event.isFavorite() ? 
+            "Ajouté aux favoris" : 
+            "Retiré des favoris";
+        Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show();
     }
 } 

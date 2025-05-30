@@ -1,5 +1,6 @@
 package com.example.eventwave.ui.favorites;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.eventwave.MapActivity;
 import com.example.eventwave.adapter.EventAdapter;
 import com.example.eventwave.databinding.FragmentFavoritesBinding;
 import com.example.eventwave.model.Event;
@@ -30,6 +32,12 @@ public class FavoritesFragment extends Fragment implements EventAdapter.OnEventC
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         setupRecyclerView();
         observeViewModel();
+
+        // Configurer le bouton FAB pour la carte
+        binding.fabMap.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), MapActivity.class);
+            startActivity(intent);
+        });
 
         return root;
     }
@@ -66,6 +74,21 @@ public class FavoritesFragment extends Fragment implements EventAdapter.OnEventC
 
     @Override
     public void onEventClick(Event event) {
-        // Gérer le clic sur un événement favori
+        // Ajouter l'événement à l'historique
+        eventViewModel.addToHistory(event);
+        
+        // Ici vous pouvez naviguer vers les détails de l'événement
+        Snackbar.make(binding.getRoot(), "Événement sélectionné : " + event.getTitle(), Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onFavoriteClick(Event event) {
+        // Inverser le statut de favori
+        eventViewModel.toggleFavorite(event);
+        
+        // Afficher un message de confirmation
+        Snackbar.make(binding.getRoot(), "Retiré des favoris", Snackbar.LENGTH_SHORT).show();
+        
+        // Pas besoin de mettre à jour l'adaptateur car le LiveData va se rafraîchir automatiquement
     }
 } 

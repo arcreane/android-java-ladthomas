@@ -1,6 +1,7 @@
 package com.example.eventwave.adapter;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,9 +16,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     private List<Event> events = new ArrayList<>();
     private List<Event> filteredEvents = new ArrayList<>();
     private final OnEventClickListener listener;
+    private String currentSearchQuery = "";
+    private String currentCategoryFilter = null;
 
     public interface OnEventClickListener {
         void onEventClick(Event event);
+        void onFavoriteClick(Event event);
     }
 
     public EventAdapter(OnEventClickListener listener) {
@@ -27,24 +31,59 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     public void setEvents(List<Event> events) {
         this.events = events;
-        this.filteredEvents.clear();
-        this.filteredEvents.addAll(events);
-        notifyDataSetChanged();
+        applyFilters();
     }
 
     public void filter(String query) {
+        this.currentSearchQuery = query;
+        applyFilters();
+    }
+    
+    public void filterByCategory(String category) {
+        this.currentCategoryFilter = category;
+        applyFilters();
+    }
+    
+    private void applyFilters() {
         filteredEvents.clear();
-        if (query.isEmpty()) {
-            filteredEvents.addAll(events);
-        } else {
-            String lowerCaseQuery = query.toLowerCase();
-            for (Event event : events) {
-                if (event.getTitle().toLowerCase().contains(lowerCaseQuery)) {
-                    filteredEvents.add(event);
-                }
+        
+        for (Event event : events) {
+            boolean matchesSearch = true;
+            boolean matchesCategory = true;
+            
+            // Filtrage par recherche textuelle
+            if (!currentSearchQuery.isEmpty()) {
+                matchesSearch = event.getTitle().toLowerCase().contains(currentSearchQuery.toLowerCase());
+            }
+            
+            // Filtrage par catégorie
+            if (currentCategoryFilter != null && !currentCategoryFilter.equals("Tous")) {
+                matchesCategory = event.getCategory().equals(currentCategoryFilter);
+            }
+            
+            if (matchesSearch && matchesCategory) {
+                filteredEvents.add(event);
             }
         }
+        
         notifyDataSetChanged();
+    }
+
+    public void updateEvent(Event event) {
+        for (int i = 0; i < events.size(); i++) {
+            if (events.get(i).getId().equals(event.getId())) {
+                events.set(i, event);
+                break;
+            }
+        }
+        
+        for (int i = 0; i < filteredEvents.size(); i++) {
+            if (filteredEvents.get(i).getId().equals(event.getId())) {
+                filteredEvents.set(i, event);
+                notifyItemChanged(i);
+                break;
+            }
+        }
     }
 
     @NonNull
@@ -72,10 +111,21 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         EventViewHolder(ItemEventBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            
+            // Rendre toute la carte cliquable
             binding.getRoot().setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     listener.onEventClick(filteredEvents.get(position));
+                }
+            });
+            
+            // Configurer le bouton favoris
+            binding.favoriteButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    Event event = filteredEvents.get(position);
+                    listener.onFavoriteClick(event);
                 }
             });
         }
@@ -86,6 +136,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             binding.eventDate.setText(event.getFormattedStartDate());
             binding.eventLocation.setText(event.getVenueName());
             binding.categoryChip.setText(event.getCategory());
+            
+            // Mettre à jour l'icône de favoris
+            binding.favoriteButton.setImageResource(
+                event.isFavorite() ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_border
+            );
 
             // Sélectionner l'image en fonction de la catégorie
             int imageResource = R.drawable.event_placeholder;

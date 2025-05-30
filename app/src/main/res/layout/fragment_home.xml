@@ -26,40 +26,50 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipAll"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tous"
-                android:checked="true"/>
+                android:checked="true"
+                app:chipBackgroundColor="@color/chip_background_selector"
+                android:textColor="@color/chip_text_color_selector"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipMusic"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Musique"/>
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipTheater"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Théâtre"/>
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipGaming"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Gaming"/>
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipConference"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Conférence"/>
+                android:text="Musique"
+                app:chipBackgroundColor="@color/chip_background_selector"
+                android:textColor="@color/chip_text_color_selector"/>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipSports"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sports"/>
+                android:text="Sport"
+                app:chipBackgroundColor="@color/chip_background_selector"
+                android:textColor="@color/chip_text_color_selector"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTheater"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Théâtre"
+                app:chipBackgroundColor="@color/chip_background_selector"
+                android:textColor="@color/chip_text_color_selector"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipFamily"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Famille"
+                app:chipBackgroundColor="@color/chip_background_selector"
+                android:textColor="@color/chip_text_color_selector"/>
+
         </com.google.android.material.chip.ChipGroup>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -113,6 +123,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_gravity="bottom|end"
-        android:src="@android:drawable/ic_dialog_map"/>
+        android:src="@drawable/ic_map"
+        android:contentDescription="Voir sur la carte"
+        app:tint="@android:color/white"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout> 

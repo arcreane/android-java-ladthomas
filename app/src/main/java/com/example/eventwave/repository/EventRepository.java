@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.preference.PreferenceManager;
 
-import com.example.eventwave.api.EventService;
+import com.example.eventwave.api.TicketmasterService;
 import com.example.eventwave.dao.EventDao;
 import com.example.eventwave.database.EventDatabase;
 import com.example.eventwave.model.Event;
@@ -25,7 +25,7 @@ import java.util.concurrent.Executors;
 
 public class EventRepository {
     private final EventDao eventDao;
-    private final EventService eventService;
+    private final TicketmasterService ticketmasterService;
     private final Executor executor;
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> error = new MutableLiveData<>();
@@ -35,7 +35,7 @@ public class EventRepository {
     public EventRepository(Application application) {
         EventDatabase db = EventDatabase.getInstance(application);
         this.eventDao = db.eventDao();
-        this.eventService = new EventService();
+        this.ticketmasterService = new TicketmasterService();
         this.executor = Executors.newFixedThreadPool(4);
         this.preferences = PreferenceManager.getDefaultSharedPreferences(application);
         this.gson = new Gson();
@@ -104,25 +104,23 @@ public class EventRepository {
 
         executor.execute(() -> {
             try {
-                List<Event> events = eventService.getEvents(location);
+                List<Event> events = ticketmasterService.getEvents(location);
                 eventDao.deleteAllEvents();
                 eventDao.insertEvents(events);
                 error.postValue(null);
                 
-                // Vérifier si ce sont des données fictives (id commence par "1")
+                // Vérifier si ce sont des données fictives (id commence par "tm")
                 if (events.size() > 0) {
                     boolean usingMockData = false;
                     for (Event event : events) {
-                        if (event.getId().equals("1") || event.getId().equals("2") || 
-                            event.getId().equals("3") || event.getId().equals("4") || 
-                            event.getId().equals("5")) {
+                        if (event.getId().startsWith("tm")) {
                             usingMockData = true;
                             break;
                         }
                     }
                     
                     if (usingMockData) {
-                        error.postValue("Mode démo : données fictives utilisées car l'API n'est pas disponible");
+                        error.postValue("Mode démo : données fictives utilisées car aucun événement Ticketmaster trouvé dans votre région");
                     }
                 }
             } catch (IOException e) {
@@ -177,11 +175,12 @@ public class EventRepository {
     }
 
     public void refreshHistoryEvents() {
-        // Récupère les événements de l'historique
+        // Récupère les événements de l'historique depuis SharedPreferences
         isLoading.postValue(true);
         executor.execute(() -> {
             try {
-                // Logique pour récupérer l'historique
+                // Les données d'historique sont déjà dans SharedPreferences
+                // Pas besoin de logique supplémentaire, juste signaler que c'est terminé
                 isLoading.postValue(false);
             } catch (Exception e) {
                 error.postValue("Erreur lors de la récupération de l'historique : " + e.getMessage());
@@ -191,8 +190,12 @@ public class EventRepository {
     }
 
     public LiveData<List<Event>> getHistoryEvents() {
-        // Pour l'instant, on retourne juste tous les événements
-        return eventDao.getAllEvents();
+        MutableLiveData<List<Event>> historyLiveData = new MutableLiveData<>();
+        executor.execute(() -> {
+            List<Event> historyEvents = getHistory();
+            historyLiveData.postValue(historyEvents);
+        });
+        return historyLiveData;
     }
 
     public LiveData<List<Event>> getEvents() {

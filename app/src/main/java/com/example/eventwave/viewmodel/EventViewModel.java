@@ -19,7 +19,6 @@ public class EventViewModel extends AndroidViewModel {
     private final EventRepository repository;
     private final MutableLiveData<Location> currentLocation = new MutableLiveData<>();
     private final MutableLiveData<Double> searchRadius = new MutableLiveData<>(5.0);
-    private final MutableLiveData<String> selectedCategory = new MutableLiveData<>("Tous");
     private final MutableLiveData<Boolean> showFavoritesOnly = new MutableLiveData<>(false);
     private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<List<Event>> historyEvents = new MutableLiveData<>(new ArrayList<>());
@@ -81,6 +80,7 @@ public class EventViewModel extends AndroidViewModel {
     public void clearHistory() {
         historyEvents.setValue(new ArrayList<>());
         repository.clearHistory();
+        refreshHistory();
     }
 
     public void toggleFavorite(Event event) {
@@ -94,11 +94,6 @@ public class EventViewModel extends AndroidViewModel {
 
     public void setSearchRadius(double radius) {
         searchRadius.setValue(radius);
-        refreshEventsWithCurrentLocation();
-    }
-
-    public void setSelectedCategory(String category) {
-        selectedCategory.setValue(category);
         refreshEventsWithCurrentLocation();
     }
 
@@ -144,5 +139,9 @@ public class EventViewModel extends AndroidViewModel {
 
     public void setUserLocation(Location location) {
         currentLocation.setValue(location);
+    }
+
+    public Location getUserLocation() {
+        return currentLocation.getValue();
     }
 } 

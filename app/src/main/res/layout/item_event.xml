@@ -7,7 +7,10 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -30,10 +33,21 @@
             android:layout_marginStart="16dp"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:layout_marginEnd="36dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/eventImage"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Titre de l'événement"/>
+            
+        <ImageButton
+            android:id="@+id/favoriteButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_favorite_border"
+            android:contentDescription="Ajouter aux favoris"/>
 
         <TextView
             android:id="@+id/eventDescription"

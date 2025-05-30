@@ -4,7 +4,7 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/navigation_home">
 
-    <fragment
+   <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.eventwave.ui.home.HomeFragment"
         android:label="Accueil" />

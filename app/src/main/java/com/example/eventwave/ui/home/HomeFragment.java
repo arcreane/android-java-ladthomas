@@ -1,5 +1,6 @@
 package com.example.eventwave.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventwave.MapActivity;
 import com.example.eventwave.R;
 import com.example.eventwave.adapter.EventAdapter;
 import com.example.eventwave.databinding.FragmentHomeBinding;
@@ -38,6 +40,13 @@ public class HomeFragment extends Fragment implements EventAdapter.OnEventClickL
         setupSearch();
         observeViewModel();
 
+        // Configurer le bouton FAB pour la carte
+        binding.fabMap.setOnClickListener(v -> {
+            // Code pour naviguer vers MapActivity
+            Intent intent = new Intent(requireContext(), MapActivity.class);
+            startActivity(intent);
+        });
+
         return root;
     }
 
@@ -49,14 +58,34 @@ public class HomeFragment extends Fragment implements EventAdapter.OnEventClickL
 
     private void setupChipGroup() {
         binding.chipAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) eventViewModel.setSelectedCategory(null);
+            if (isChecked) {
+                eventAdapter.filterByCategory(null);
+            }
         });
 
         binding.chipMusic.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) eventViewModel.setSelectedCategory("Musique");
+            if (isChecked) {
+                eventAdapter.filterByCategory("Musique");
+            }
         });
 
-        // Ajoutez les autres chips de la même manière
+        binding.chipSports.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                eventAdapter.filterByCategory("Sport");
+            }
+        });
+
+        binding.chipTheater.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                eventAdapter.filterByCategory("Théâtre");
+            }
+        });
+
+        binding.chipFamily.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                eventAdapter.filterByCategory("Famille");
+            }
+        });
     }
 
     private void setupSearch() {
@@ -76,8 +105,10 @@ public class HomeFragment extends Fragment implements EventAdapter.OnEventClickL
 
     private void observeViewModel() {
         eventViewModel.getEvents().observe(getViewLifecycleOwner(), events -> {
-            eventAdapter.setEvents(events);
-            binding.progressBar.setVisibility(View.GONE);
+            if (events != null) {
+                eventAdapter.setEvents(events);
+                binding.progressBar.setVisibility(View.GONE);
+            }
         });
 
         eventViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
@@ -99,6 +130,25 @@ public class HomeFragment extends Fragment implements EventAdapter.OnEventClickL
 
     @Override
     public void onEventClick(Event event) {
-        // Gérer le clic sur un événement
+        // Ajouter l'événement à l'historique
+        eventViewModel.addToHistory(event);
+        
+        // Ici vous pouvez naviguer vers les détails de l'événement
+        Snackbar.make(binding.getRoot(), "Événement sélectionné : " + event.getTitle(), Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onFavoriteClick(Event event) {
+        // Inverser le statut de favori
+        eventViewModel.toggleFavorite(event);
+        
+        // Mettre à jour l'adaptateur avec l'événement modifié
+        eventAdapter.updateEvent(event);
+        
+        // Afficher un message de confirmation
+        String message = event.isFavorite() ? 
+            "Ajouté aux favoris" : 
+            "Retiré des favoris";
+        Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show();
     }
 } 

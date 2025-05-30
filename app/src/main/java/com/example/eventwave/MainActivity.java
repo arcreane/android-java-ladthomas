@@ -16,7 +16,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import com.example.eventwave.api.EventService;
+import com.example.eventwave.api.TicketmasterService;
 import com.example.eventwave.databinding.ActivityMainBinding;
 import com.example.eventwave.viewmodel.EventViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Test de l'API OpenAgenda
+        // Test de l'API Ticketmaster
         new Thread(() -> {
-            new EventService().testApiConnection();
+            new TicketmasterService().testApiConnection();
         }).start();
 
         // Configurer la Toolbar
