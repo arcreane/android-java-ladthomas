@@ -402,16 +402,16 @@ public class TicketmasterService {
                         TicketmasterResponse ticketmasterResponse = response.body();
                         List<TicketmasterEvent> events = ticketmasterResponse.getEvents();
                         if (events != null) {
-                            Log.d(TAG, "✅ Test API réussi - " + events.size() + " événements trouvés");
+                            Log.d(TAG, " Test API réussi - " + events.size() + " événements trouvés");
                             for (int i = 0; i < Math.min(3, events.size()); i++) {
                                 TicketmasterEvent event = events.get(i);
                                 Log.d(TAG, "Événement " + (i+1) + ": " + event.getEventName() + " à " + event.getCityName());
                             }
                         } else {
-                            Log.w(TAG, "⚠️ Test API - Aucun événement trouvé");
+                            Log.w(TAG, " Test API - Aucun événement trouvé");
                         }
                     } else {
-                        Log.e(TAG, "❌ Test API échoué - Code: " + response.code());
+                        Log.e(TAG, " Test API échoué - Code: " + response.code());
                         try {
                             if (response.errorBody() != null) {
                                 Log.e(TAG, "Erreur: " + response.errorBody().string());
@@ -424,12 +424,12 @@ public class TicketmasterService {
                 
                 @Override
                 public void onFailure(Call<TicketmasterResponse> call, Throwable t) {
-                    Log.e(TAG, "❌ Test API échoué - Exception: " + t.getMessage(), t);
+                    Log.e(TAG, " Test API échoué - Exception: " + t.getMessage(), t);
                 }
             });
             
         } catch (Exception e) {
-            Log.e(TAG, "❌ Exception lors du test API: " + e.getMessage(), e);
+            Log.e(TAG, " Exception lors du test API: " + e.getMessage(), e);
         }
     }
 } 
